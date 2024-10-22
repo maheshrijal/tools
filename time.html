@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Zone Converter</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .time-display {
+            margin: 2rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        .time-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .time-row:last-child {
+            border-bottom: none;
+        }
+        .timezone {
+            font-weight: bold;
+            color: #495057;
+            flex: 1;
+        }
+        .timezone-detail {
+            color: #6c757d;
+            font-size: 0.9em;
+            font-weight: normal;
+        }
+        .time {
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: #212529;
+            margin: 0 1rem;
+            min-width: 120px;
+            text-align: right;
+        }
+        .remove-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            visibility: hidden;
+            width: 70px;
+        }
+        .time-row:not(.fixed) .remove-btn {
+            visibility: visible;
+        }
+        .remove-btn:hover {
+            background-color: #c82333;
+        }
+        h1 {
+            color: #343a40;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .date {
+            color: #6c757d;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .add-timezone {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .add-timezone select {
+            padding: 0.5rem;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            min-width: 300px;
+        }
+        .add-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            min-width: 120px;
+        }
+        .add-btn:hover {
+            background-color: #218838;
+        }
+        .fixed {
+            opacity: 0.9;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>World Time Zones</h1>
+        <div class="date" id="current-date"></div>
+        <div class="time-display" id="time-display">
+            <div class="time-row fixed">
+                <span class="timezone">Your Local Time <span class="timezone-detail" id="local-zone"></span></span>
+                <span class="time" id="local-time"></span>
+                <button class="remove-btn">Remove</button>
+            </div>
+            <div class="time-row fixed">
+                <span class="timezone">UTC</span>
+                <span class="time" id="time-UTC"></span>
+                <button class="remove-btn">Remove</button>
+            </div>
+        </div>
+        <div class="add-timezone">
+            <select id="timezone-select">
+                <option value="">Select a timezone...</option>
+            </select>
+            <button class="add-btn" onclick="addTimezone()">Add Timezone</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize available timezones
+        const timezonesSet = new Set(['UTC']);
+        
+        // Get local timezone name
+        function getLocalTimeZone() {
+            try {
+                return Intl.DateTimeFormat().resolvedOptions().timeZone;
+            } catch (e) {
+                return '(Unknown Timezone)';
+            }
+        }
+
+        // Populate timezone dropdown with all available timezones
+        function populateTimezoneSelect() {
+            const select = document.getElementById('timezone-select');
+            
+            // Get all available timezones from Intl
+            const timezones = Intl.supportedValuesOf('timeZone');
+            
+            timezones
+                .filter(zone => zone !== 'UTC') // Remove UTC since it's already default
+                .sort()
+                .forEach(zone => {
+                    const option = document.createElement('option');
+                    option.value = zone;
+                    // Format the timezone name
+                    option.text = zone.replace(/_/g, ' ').replace(/\//g, ' / ');
+                    select.appendChild(option);
+                });
+
+            // Set local timezone display
+            document.getElementById('local-zone').textContent = `(${getLocalTimeZone()})`;
+        }
+
+        function addTimezone() {
+            const select = document.getElementById('timezone-select');
+            const selectedZone = select.value;
+            
+            if (!selectedZone) {
+                alert('Please select a timezone');
+                return;
+            }
+            
+            if (timezonesSet.has(selectedZone)) {
+                alert('This timezone is already added');
+                return;
+            }
+            
+            const zoneName = select.options[select.selectedIndex].text;
+            addTimezoneToDisplay(zoneName, selectedZone);
+            timezonesSet.add(selectedZone);
+            select.value = '';
+        }
+
+        function addTimezoneToDisplay(name, zone) {
+            const display = document.getElementById('time-display');
+            const row = document.createElement('div');
+            row.className = 'time-row';
+            row.innerHTML = `
+                <span class="timezone">${name}</span>
+                <span class="time" id="time-${zone.replace(/\//g, '-')}"></span>
+                <button class="remove-btn" onclick="removeTimezone('${zone}', this)">Remove</button>
+            `;
+            display.appendChild(row);
+        }
+
+        function removeTimezone(zone, button) {
+            button.parentElement.remove();
+            timezonesSet.delete(zone);
+        }
+
+        function updateTimes() {
+            const now = new Date();
+            
+            // Update current date
+            const dateOptions = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('current-date').textContent = now.toLocaleDateString(undefined, dateOptions);
+
+            // Update times with 24-hour format
+            const timeOptions = {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+
+            // Local time
+            document.getElementById('local-time').textContent = now.toLocaleTimeString(undefined, timeOptions);
+
+            // UTC time (always shown)
+            document.getElementById('time-UTC').textContent = now.toLocaleTimeString('en-US', { ...timeOptions, timeZone: 'UTC' });
+
+            // Update all added timezones
+            timezonesSet.forEach(zone => {
+                if (zone === 'UTC') return; // Skip UTC as it's handled above
+                const element = document.getElementById(`time-${zone.replace(/\//g, '-')}`);
+                if (element) {
+                    element.textContent = now.toLocaleTimeString('en-US', { ...timeOptions, timeZone: zone });
+                }
+            });
+        }
+
+        // Initialize the page
+        populateTimezoneSelect();
+        
+        // Update times immediately and then every second
+        updateTimes();
+        setInterval(updateTimes, 1000);
+    </script>
+</body>
+</html>
