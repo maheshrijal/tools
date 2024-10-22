@@ -3,69 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tools on My Website</title>
+    <title>Assorted Tools</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        h1 {
-            margin: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f5f5f5;
+            color: #333;
         }
         .container {
-            max-width: 800px;
-            margin: 40px auto;
             background-color: white;
-            padding: 20px;
+            padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-height: calc(100vh - 8rem);
+            display: flex;
+            flex-direction: column;
         }
-        .tool-list {
+        h1 {
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            text-align: center;
+        }
+        .tool-section {
+            margin-bottom: 2rem;
+        }
+        .tool-section h2 {
+            color: #4a5568;
+            margin-bottom: 1rem;
+        }
+        ul {
             list-style-type: none;
             padding: 0;
         }
-        .tool-item {
-            margin: 15px 0;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+        li {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
         }
-        .tool-item:last-child {
-            border-bottom: none;
+        li::before {
+            content: "•";
+            color: #4299e1;
+            position: absolute;
+            left: 0;
         }
         a {
+            color: #3182ce;
             text-decoration: none;
-            color: #007BFF;
-            font-size: 1.2em;
+            transition: color 0.2s;
         }
         a:hover {
+            color: #2c5282;
             text-decoration: underline;
+        }
+        .tool-description {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        .external-links {
+            text-align: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f7fafc;
+            border-radius: 6px;
+        }
+        .external-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .external-link::after {
+            content: "↗";
+            font-size: 0.8em;
+            margin-left: 0.2em;
+        }
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        footer p {
+            margin: 0.5rem 0;
+        }
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #24292e;
+            color: white;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+        .github-link:hover {
+            background-color: #1a1e22;
+            color: white;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>Developer Tools</h1>
+        
+        <div class="external-links">
+            <a href="https://maheshrijal.com" class="external-link" target="_blank" rel="noopener noreferrer">
+                Visit My Blog
+            </a>
+        </div>
 
-<header>
-    <h1>Assorted Tools</h1>
-</header>
+        <div class="tool-section">
+            <h2>Time Tools</h2>
+            <ul>
+                <li>
+                    <a href="/epoch">Epoch Converter</a>
+                    <div class="tool-description">
+                        Convert between Unix timestamp and human-readable date/time formats in different timezones.
+                    </div>
+                </li>
+                <li>
+                    <a href="/time">World Time Utility</a>
+                    <div class="tool-description">
+                        View the current time across multiple timezones.
+                    </div>
+                </li>
+            </ul>
+        </div>
 
-<div class="container">
-    <ul class="tool-list">
-        <li class="tool-item">
-            <a href="/epoch">Epoch Converter</a>
-        </li>
-        <li class="tool-item">
-            <a href="/time">Timezone Viewer</a>
-        </li>
-    </ul>
-</div>
-
+        <footer>
+            <p>This website is AI-generated</p>
+            <a href="https://github.com/maheshrijal/tools" target="_blank" rel="noopener noreferrer" class="github-link">
+                Suggest Improvements on GitHub
+            </a>
+        </footer>
+    </div>
 </body>
 </html>
